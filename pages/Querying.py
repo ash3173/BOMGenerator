@@ -4,6 +4,32 @@ import csv
 from datetime import datetime
 import io
 import matplotlib.pyplot as plt
+import time
+import tracemalloc
+
+def time_and_memory(func):
+    def wrapper(*args, **kwargs):
+        tracemalloc.start()
+        start_time = time.time()
+        result = func(*args, **kwargs)  # Call the actual function
+        end_time = time.time()
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        
+        # Display time and memory used
+        st.markdown(f"<span style='color:skyblue;'>Time taken: {end_time - start_time:.2f} seconds</span>", unsafe_allow_html=True)
+        st.markdown(f"<span style='color:skyblue;'>Memory used: {current / 1024:.2f} KiB</span>", unsafe_allow_html=True)
+
+        
+        return result  # Return the result of the wrapped function
+    return wrapper
+
+
+@time_and_memory
+def statistics(graph):
+    # Display graph statistics
+    st.write(f"Number of nodes: {graph.number_of_nodes()}")
+    st.write(f"Number of edges: {graph.number_of_edges()}")
 
 def extract_and_visualize_subgraph(graph, input_node, radius=None):
     # Step 1: Extract the subgraph with ego_graph function (nodes within the radius from the input node)
@@ -27,6 +53,7 @@ def extract_and_visualize_subgraph(graph, input_node, radius=None):
 
     return subgraph
 
+@time_and_memory
 def subgraph(graph):
     
     st.title("Subgraph Extraction and Visualization")
@@ -49,6 +76,7 @@ def subgraph(graph):
         except nx.NetworkXError:
             st.error(f"Node {input_node} not found in the graph. Please enter a valid node ID.")
 
+@time_and_memory
 def visualize_shortest_path(graph):
     # Get the list of all nodes in the graph
     node_list = list(graph.nodes())
@@ -84,6 +112,7 @@ def visualize_shortest_path(graph):
     except nx.NetworkXNoPath:
         st.error(f"No path exists between `{node_1}` and `{node_2}`")
 
+@time_and_memory
 def calculate_total_cost_with_weights(graph):
 
     st.title("Total Cost Calculation for Manufacturing or Purchasing Parts")
@@ -134,6 +163,7 @@ def calculate_total_cost_with_weights(graph):
         else:
             st.write("Please enter a valid start node.")
 
+@time_and_memory
 def count_parts_needed(graph):
     st.title("Parts Counter for Product Node")
 
@@ -169,6 +199,7 @@ def count_parts_needed(graph):
         else:
             st.write("Please enter a valid product node.")
 
+@time_and_memory
 def check_part_expiration(graph):
     st.title("Part Expiration Checker")
 
@@ -204,7 +235,36 @@ def check_part_expiration(graph):
         else:
             st.write("Please enter a valid part node.")
 
+@time_and_memory
+def find_suppliers_for_purchase_part(graph):
+    # Step 1: Input for Purchase Part Node
+    purchase_part_node = st.text_input("Enter Purchase Part Node ID:")
+    
+    if st.button("Find Suppliers"):
+        if not purchase_part_node:
+            st.warning("Please enter a valid Purchase Part Node ID.")
+            return
+        
+        # Check if the purchase part node exists in the graph
+        if purchase_part_node not in graph:
+            st.warning(f"Node {purchase_part_node} not found in the graph.")
+            return
 
+        suppliers = []
+
+        # Iterate through neighbors of the purchase part node
+        for neighbor in graph.neighbors(purchase_part_node):
+            # Check if the neighbor has the 'label' attribute indicating it is a supplier
+            if graph.nodes[neighbor].get('label') == 'Suppliers':
+                suppliers.append(neighbor)
+
+        # Display results
+        if suppliers:
+            st.success(f"Suppliers for {purchase_part_node}: {', '.join(suppliers)}")
+        else:
+            st.warning(f"No suppliers found for {purchase_part_node}.")
+
+@time_and_memory
 # Define a function to add nodes from CSV
 def add_nodes_from_csv(graph, all_csv):
     module = True
@@ -305,15 +365,14 @@ def app():
     if uploaded_files:
         st.success("CSV files uploaded successfully!")
         graph = add_nodes_from_csv(G, uploaded_files)
+        st.success("Graph converted from CSV successfully!")
 
         
 
-        options = ["Select an option","Statistics", "subgraph", "visualize_shortest_path", "Count Parts", "Total Cost", "Expiry Date"]
+        options = ["Select an option","Statistics", "subgraph", "visualize_shortest_path", "Count Parts", "Total Cost", "Expiry Date", "Find Supplier"]
         selected_option = st.selectbox("Choose an option:", options)
         if selected_option == "Statistics":
-            # Display graph statistics
-            st.write(f"Number of nodes: {graph.number_of_nodes()}")
-            st.write(f"Number of edges: {graph.number_of_edges()}")
+            statistics(graph)
         elif selected_option == "subgraph":
             subgraph(graph)
         elif selected_option == "visualize_shortest_path":
@@ -324,6 +383,9 @@ def app():
             calculate_total_cost_with_weights(graph)
         elif selected_option=="Expiry Date":
             check_part_expiration(graph)
+            find_suppliers_for_purchase_part(graph)
+        elif selected_option=="Find Supplier":
+            find_suppliers_for_purchase_part(graph)
 
     else:
         st.warning("Please upload CSV files to add nodes to the graph.")

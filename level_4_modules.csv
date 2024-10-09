@@ -1,13 +1,9 @@
 ID,Name,Label,Edge_weight,ParentID
-1,Module_1,Module,84,Coronus Product Family - Series e
-2,Module_2,Module,86,Coronus Product Family - Series b
-3,Module_3,Module,47,Versys Metal Product Family - Series f
-4,Module_4,Module,96,Coronus Product Family - Series d
-5,Module_5,Module,67,Kiyo Product Family - Series d
-6,Module_6,Module,59,Kiyo Product Family - Series b
-7,Module_7,Module,92,Kiyo Product Family - Series f
-8,Module_8,Module,42,Flex Product Family - Series f
-9,Module_9,Module,12,Coronus Product Family - Series e
-10,Module_10,Module,59,Coronus Product Family - Series e
-11,Module_11,Module,80,Versys Metal Product Family - Series b
-12,Module_12,Module,96,Flex Product Family - Series b
+1,Module_1,Module,86,Versys Metal Product Family - Series c
+2,Module_2,Module,68,Flex Product Family - Series f
+3,Module_3,Module,97,Coronus Product Family - Series d
+4,Module_4,Module,55,Kiyo Product Family - Series d
+5,Module_5,Module,10,Versys Metal Product Family - Series a
+6,Module_6,Module,10,Coronus Product Family - Series a
+7,Module_7,Module,59,Coronus Product Family - Series a
+8,Module_8,Module,92,Coronus Product Family - Series e

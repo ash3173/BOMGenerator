@@ -1,58 +1,25 @@
 ID,ParentID,Name,Attribute1,Attribute2,Attribute3,Attribute4,Attribute5,Label,Edge_Weight
-13,8,PurchasePart_13,S14,2021-03-01,720,9.39,8,Purchase_Parts,43
-S14,13,Supplier_S14,+1-555-796-5960,Germany,,,,Suppliers,61
-15,3,PurchasePart_15,S16,2021-07-20,724,33.98,22,Purchase_Parts,19
-S16,15,Supplier_S16,+1-555-762-3411,China,,,,Suppliers,51
-17,11,PurchasePart_17,S18,2023-01-08,618,15.34,16,Purchase_Parts,37
-S18,17,Supplier_S18,+1-555-370-9248,Germany,,,,Suppliers,99
-19,7,PurchasePart_19,S20,2023-11-18,940,12.11,7,Purchase_Parts,10
-S20,19,Supplier_S20,+1-555-360-7830,Japan,,,,Suppliers,65
-21,9,PurchasePart_21,S22,2022-10-02,340,13.78,29,Purchase_Parts,60
-S22,21,Supplier_S22,+1-555-877-2343,Germany,,,,Suppliers,66
-23,4,MakePart_23,2021-10-02,601,49.38,8,Pending,make parts,57
-24,6,PurchasePart_24,S25,2022-01-17,309,27.45,8,Purchase_Parts,87
-S25,24,Supplier_S25,+1-555-873-4136,China,,,,Suppliers,57
-26,9,PurchasePart_26,S27,2020-04-01,242,33.03,6,Purchase_Parts,65
-S27,26,Supplier_S27,+1-555-862-7195,USA,,,,Suppliers,35
-28,10,MakePart_28,2020-11-23,830,47.32,6,Pending,make parts,93
-29,10,PurchasePart_29,S30,2022-07-16,979,40.47,11,Purchase_Parts,62
-S30,29,Supplier_S30,+1-555-748-1700,UK,,,,Suppliers,70
-31,7,PurchasePart_31,S32,2020-02-02,804,41.34,22,Purchase_Parts,93
-S32,31,Supplier_S32,+1-555-204-5910,Japan,,,,Suppliers,82
-33,7,PurchasePart_33,S34,2022-05-28,504,38.1,9,Purchase_Parts,10
-S34,33,Supplier_S34,+1-555-628-8284,UK,,,,Suppliers,45
-35,1,PurchasePart_35,S36,2020-03-17,751,23.49,6,Purchase_Parts,16
-S36,35,Supplier_S36,+1-555-154-6286,Japan,,,,Suppliers,15
-37,1,PurchasePart_37,S38,2020-01-17,936,39.55,10,Purchase_Parts,89
-S38,37,Supplier_S38,+1-555-119-1624,China,,,,Suppliers,60
-39,7,PurchasePart_39,S40,2020-12-01,440,38.85,16,Purchase_Parts,32
-S40,39,Supplier_S40,+1-555-744-2663,China,,,,Suppliers,83
-41,6,PurchasePart_41,S42,2023-07-14,474,5.05,8,Purchase_Parts,75
-S42,41,Supplier_S42,+1-555-806-8633,Japan,,,,Suppliers,30
-43,3,PurchasePart_43,S44,2022-12-27,337,16.17,11,Purchase_Parts,54
-S44,43,Supplier_S44,+1-555-810-2223,Germany,,,,Suppliers,41
-45,11,MakePart_45,2022-07-16,819,94.45,30,Passed,make parts,54
-46,3,MakePart_46,2022-06-18,978,10.55,28,Failed,make parts,20
-47,8,PurchasePart_47,S48,2021-01-23,611,19.07,28,Purchase_Parts,44
-S48,47,Supplier_S48,+1-555-890-9330,UK,,,,Suppliers,23
-49,8,PurchasePart_49,S50,2023-12-19,726,18.92,30,Purchase_Parts,62
-S50,49,Supplier_S50,+1-555-591-4441,Germany,,,,Suppliers,66
-51,7,MakePart_51,2021-02-20,914,33.93,9,Failed,make parts,71
-52,2,PurchasePart_52,S53,2021-03-05,314,33.23,6,Purchase_Parts,71
-S53,52,Supplier_S53,+1-555-625-9960,UK,,,,Suppliers,59
-54,5,PurchasePart_54,S55,2020-03-10,739,9.97,25,Purchase_Parts,80
-S55,54,Supplier_S55,+1-555-998-7322,UK,,,,Suppliers,41
-56,11,PurchasePart_56,S57,2020-07-11,972,49.4,9,Purchase_Parts,13
-S57,56,Supplier_S57,+1-555-927-2372,USA,,,,Suppliers,48
-58,4,PurchasePart_58,S59,2022-12-10,825,37.92,17,Purchase_Parts,94
-S59,58,Supplier_S59,+1-555-302-8676,China,,,,Suppliers,41
-60,7,MakePart_60,2023-08-03,311,43.0,13,Failed,make parts,59
-61,7,PurchasePart_61,S62,2021-01-20,966,37.87,15,Purchase_Parts,77
-S62,61,Supplier_S62,+1-555-390-9302,Japan,,,,Suppliers,67
-63,8,PurchasePart_63,S64,2021-04-09,914,40.49,28,Purchase_Parts,96
-S64,63,Supplier_S64,+1-555-711-2929,USA,,,,Suppliers,40
-65,9,PurchasePart_65,S66,2023-11-06,395,27.37,8,Purchase_Parts,52
-S66,65,Supplier_S66,+1-555-895-7647,UK,,,,Suppliers,19
-67,6,MakePart_67,2020-06-08,936,39.01,6,Pending,make parts,60
-68,7,PurchasePart_68,S69,2023-09-08,384,6.59,23,Purchase_Parts,18
-S69,68,Supplier_S69,+1-555-139-3915,UK,,,,Suppliers,27
+9,8,MakePart_9,2020-03-06,966,89.15,6,Failed,make parts,51
+10,6,PurchasePart_10,S11,2022-05-21,995,47.44,10,Purchase_Parts,96
+S11,10,Supplier_S11,+1-555-213-4411,Germany,,,,Suppliers,56
+12,5,PurchasePart_12,S13,2022-11-26,429,40.67,6,Purchase_Parts,11
+S13,12,Supplier_S13,+1-555-791-5970,USA,,,,Suppliers,43
+14,5,MakePart_14,2021-02-07,384,74.02,4,Pending,make parts,52
+15,8,PurchasePart_15,S16,2022-09-08,925,9.51,22,Purchase_Parts,48
+S16,15,Supplier_S16,+1-555-940-2066,USA,,,,Suppliers,91
+17,2,MakePart_17,2021-06-15,309,56.88,6,Failed,make parts,51
+18,1,MakePart_18,2022-09-28,456,88.45,3,Failed,make parts,84
+19,8,MakePart_19,2021-06-16,328,22.19,24,Failed,make parts,93
+20,4,PurchasePart_20,S21,2023-05-21,571,5.42,22,Purchase_Parts,36
+S21,20,Supplier_S21,+1-555-761-4391,China,,,,Suppliers,51
+22,5,MakePart_22,2020-04-01,802,11.21,5,Failed,make parts,85
+23,4,PurchasePart_23,S24,2022-03-12,102,25.34,18,Purchase_Parts,92
+S24,23,Supplier_S24,+1-555-549-8522,Germany,,,,Suppliers,75
+25,5,PurchasePart_25,S26,2021-03-15,561,41.4,6,Purchase_Parts,38
+S26,25,Supplier_S26,+1-555-348-6755,UK,,,,Suppliers,62
+27,2,PurchasePart_27,S28,2022-06-10,514,25.61,23,Purchase_Parts,73
+S28,27,Supplier_S28,+1-555-103-5827,UK,,,,Suppliers,59
+29,7,MakePart_29,2022-10-10,404,35.4,11,Failed,make parts,45
+30,7,MakePart_30,2021-06-24,760,73.28,4,Pending,make parts,41
+31,4,PurchasePart_31,S32,2022-02-27,992,8.01,30,Purchase_Parts,26
+S32,31,Supplier_S32,+1-555-715-7314,China,,,,Suppliers,36

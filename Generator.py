@@ -6,6 +6,24 @@ from datetime import datetime, timedelta
 import zipfile
 import os
 from io import BytesIO
+import time
+import tracemalloc
+
+def time_and_memory(func):
+    def wrapper(*args, **kwargs):
+        tracemalloc.start()
+        start_time = time.time()
+        result = func(*args, **kwargs)  # Call the actual function
+        end_time = time.time()
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        
+        # Display time and memory used
+        st.write(f"Time taken: {end_time - start_time:.2f} seconds")
+        st.write(f"Memory used: {current / 1024:.2f} KiB")
+        
+        return result  # Return the result of the wrapped function
+    return wrapper
 
 # Define classes for MakeParts, PurchaseParts, Suppliers, Modules
 
@@ -99,6 +117,7 @@ def create_zip(files):
     return memory_file
 
 # Function to expand graph and generate CSV
+@time_and_memory
 def expand_graph_csv(existing_nodes_level_3, total_new_nodes, levels_to_add):
     current_node_id = 1
     parent_ids = existing_nodes_level_3
@@ -169,6 +188,54 @@ def expand_graph_csv(existing_nodes_level_3, total_new_nodes, levels_to_add):
 
 # Streamlit App Interface
 st.title("Graph Expansion and CSV Generator")
+with st.expander("Show Schema Details"):
+    
+    st.header("Make_Parts Table")
+    make_parts_table = """
+    | *Attribute*              | *Type*          |
+    |---------------------------|------------------|
+    | Part_ID                   | String           |
+    | Label                     | Make Parts       |
+    | Part_Name                 | String           |
+    | Date_Manufacturing        | Date             |
+    | Available_Quantity         | Integer         |
+    | Manufacturing_Cost        | Decimal          |
+    | Manufacturing_Time        | Integer          |
+    | Quality_Control_Status    | String           |
+    | Parent_ID                 | String (FK)     |
+    """
+    st.markdown(make_parts_table)
+
+    # Purchase_Parts Table
+    st.header("Purchase_Parts Table")
+    purchase_parts_table = """
+    | *Attribute*              | *Type*          |
+    |---------------------------|------------------|
+    | Part_ID                   | String           |
+    | Label                     | Purchase Parts   |
+    | Part_Name                 | String           |
+    | Supplier_ID               | String (FK)     |
+    | Date_Purchased            | Date             |
+    | Available_Quantity         | Integer         |
+    | Cost_Per_Unit            | Decimal          |
+    | Lead_Time                 | Integer          |
+    | Warranty_Period           | Integer          |
+    | Parent_ID                 | String (FK)     |
+    """
+    st.markdown(purchase_parts_table)
+
+    # Suppliers Table
+    st.header("Suppliers Table")
+    suppliers_table = """
+    | *Attribute*              | *Type*          |
+    |---------------------------|------------------|
+    | Supplier_ID               | String           |
+    | Label                     | Supplier         |
+    | Supplier_Name             | String           |
+    | Contact_Details           | String           |
+    | Location                  | String           |
+    """
+    st.markdown(suppliers_table)
 
 # User input
 existing_nodes = ['Kiyo Product Family - Series a', 'Kiyo Product Family - Series b', 'Kiyo Product Family - Series c', 'Kiyo Product Family - Series d', 'Kiyo Product Family - Series e', 'Kiyo Product Family - Series f', 'Coronus Product Family - Series a', 'Coronus Product Family - Series b', 'Coronus Product Family - Series c', 'Coronus Product Family - Series d', 'Coronus Product Family - Series e', 'Coronus Product Family - Series f',
