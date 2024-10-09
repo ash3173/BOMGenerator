@@ -19,8 +19,9 @@ def time_and_memory(func):
         tracemalloc.stop()
         
         # Display time and memory used
-        st.write(f"Time taken: {end_time - start_time:.2f} seconds")
-        st.write(f"Memory used: {current / 1024:.2f} KiB")
+        st.markdown(f"<span style='color:skyblue;'>Time taken: {end_time - start_time:.2f} seconds</span>", unsafe_allow_html=True)
+        st.markdown(f"<span style='color:skyblue;'>Memory used: {current / 1024:.2f} KiB</span>", unsafe_allow_html=True)
+
         
         return result  # Return the result of the wrapped function
     return wrapper

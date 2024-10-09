@@ -411,12 +411,12 @@ def app():
         
 
         options = ["Select an option","Statistics", "Subgraph", "Visualize Shortest Path", "Count Parts", "Total Cost", "Expiry Date", "Find Supplier", "Quality Control Status", "Node Features"]
-        selected_option = st.selectbox("Choose an option:", options)
+        selected_option = st.selectbox("Choose a query:", options)
         if selected_option == "Statistics":
             statistics(graph)
-        elif selected_option == "subgraph":
+        elif selected_option == "Subgraph":
             subgraph(graph)
-        elif selected_option == "visualize_shortest_path":
+        elif selected_option == "Visualize Shortest Path":
             visualize_shortest_path(graph)
         elif selected_option == "Count Parts":
             count_parts_needed(graph)
