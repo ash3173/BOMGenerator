@@ -265,6 +265,47 @@ def find_suppliers_for_purchase_part(graph):
             st.warning(f"No suppliers found for {purchase_part_node}.")
 
 @time_and_memory
+def get_quality_control_status_streamlit(graph):
+    st.title("Check Quality Control Status")
+    
+    # Input field for part ID
+    part_id = st.text_input("Enter the Part ID:", value="")
+    
+    if part_id:
+        # Check if the node exists in the graph
+        if part_id in graph.nodes:
+            # Check if the node has a quality control status
+            node_data = graph.nodes[part_id]
+            if 'quality_control_status' in node_data:
+                st.success(f"Part ID: {part_id}, Quality Control Status: {node_data['quality_control_status']}")
+            else:
+                st.warning(f"Part ID: {part_id} does not have a quality control status attribute.")
+        else:
+            st.error(f"Part ID: {part_id} not found in the graph.")
+
+@time_and_memory
+def display_node_features(graph):
+    st.title("Node Features Viewer")
+    
+    # Input field for the node ID
+    node_id = st.text_input("Enter the Node ID:", value="")
+    
+    if node_id:
+        # Check if the node exists in the graph
+        if node_id in graph.nodes:
+            # Fetch all node attributes
+            node_attributes = graph.nodes[node_id]
+            
+            # Display the node attributes in Streamlit
+            if node_attributes:
+                st.subheader(f"Features for Node ID: {node_id}")
+                for key, value in node_attributes.items():
+                    st.write(f"**{key}**: {value}")
+            else:
+                st.warning(f"Node {node_id} has no attributes.")
+        else:
+            st.error(f"Node ID {node_id} not found in the graph.")
+@time_and_memory
 # Define a function to add nodes from CSV
 def add_nodes_from_csv(graph, all_csv):
     module = True
@@ -369,7 +410,7 @@ def app():
 
         
 
-        options = ["Select an option","Statistics", "subgraph", "visualize_shortest_path", "Count Parts", "Total Cost", "Expiry Date", "Find Supplier"]
+        options = ["Select an option","Statistics", "Subgraph", "Visualize Shortest Path", "Count Parts", "Total Cost", "Expiry Date", "Find Supplier", "Quality Control Status", "Node Features"]
         selected_option = st.selectbox("Choose an option:", options)
         if selected_option == "Statistics":
             statistics(graph)
@@ -386,6 +427,10 @@ def app():
             find_suppliers_for_purchase_part(graph)
         elif selected_option=="Find Supplier":
             find_suppliers_for_purchase_part(graph)
+        elif selected_option=="Quality Control Status":
+            get_quality_control_status_streamlit(graph)
+        elif selected_option=="Node Features":
+            display_node_features(graph)
 
     else:
         st.warning("Please upload CSV files to add nodes to the graph.")
