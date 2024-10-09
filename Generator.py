@@ -8,8 +8,11 @@ import os
 from io import BytesIO
 import time
 import tracemalloc
+import matplotlib.pyplot as plt
+import functools
 
 def time_and_memory(func):
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         tracemalloc.start()
         start_time = time.time()
@@ -116,6 +119,51 @@ def create_zip(files):
             zf.write(file)
     memory_file.seek(0)
     return memory_file
+
+
+def analyze_generation_time(expand_graph_function, existing_nodes, max_new_nodes=1000, step=100, levels_to_add=2):
+    """
+    Analyze and plot the growth rate of graph generation time with respect to the number of new nodes.
+    
+    Parameters:
+        expand_graph_function (function): Function to generate the graph.
+        existing_nodes (int): Current number of nodes in the graph.
+        max_new_nodes (int): Maximum number of new nodes to test.
+        step (int): The increment step for new node counts.
+        levels_to_add (int): Number of levels to add during graph expansion.
+    """
+    new_node_counts = []
+    times = []
+    
+    st.title("Graph Generation Time Analysis")
+
+    # Measure time for graph generation with varying new node counts
+    for new_node_count in range(step, max_new_nodes + step, step):
+        start_time = time.time()
+        
+        
+        # Call the graph generation function
+        generated_files = expand_graph_csv.__wrapped__(existing_nodes, new_node_count, levels_to_add)
+        
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        
+        new_node_counts.append(new_node_count)
+        times.append(elapsed_time)
+    
+    # Plotting the results
+    plt.figure(figsize=(10, 6))
+    plt.plot(new_node_counts, times, marker='o', color='skyblue', label="Generation Time")
+    plt.xlabel("Number of New Nodes")
+    plt.ylabel("Time (seconds)")
+    plt.title("Growth Rate of Time vs Number of New Nodes")
+    plt.grid(True)
+    plt.legend()
+
+    # Display the plot in Streamlit
+    st.pyplot(plt)
+    
+
 
 # Function to expand graph and generate CSV
 @time_and_memory
@@ -241,8 +289,8 @@ with st.expander("Show Schema Details"):
 # User input
 existing_nodes = ['Kiyo Product Family - Series a', 'Kiyo Product Family - Series b', 'Kiyo Product Family - Series c', 'Kiyo Product Family - Series d', 'Kiyo Product Family - Series e', 'Kiyo Product Family - Series f', 'Coronus Product Family - Series a', 'Coronus Product Family - Series b', 'Coronus Product Family - Series c', 'Coronus Product Family - Series d', 'Coronus Product Family - Series e', 'Coronus Product Family - Series f',
                 'Flex Product Family - Series a', 'Flex Product Family - Series b', 'Flex Product Family - Series c', 'Flex Product Family - Series d', 'Flex Product Family - Series e', 'Flex Product Family - Series f', 'Versys Metal Product Family - Series a', 'Versys Metal Product Family - Series b', 'Versys Metal Product Family - Series c', 'Versys Metal Product Family - Series d', 'Versys Metal Product Family - Series e', 'Versys Metal Product Family - Series f']
-total_new_nodes = st.number_input("Total New Nodes", min_value=1, max_value=1000000, value=100000)
-levels_to_add = st.number_input("Levels to Add", min_value=1, max_value=10, value=6)
+total_new_nodes = st.number_input("Total New Nodes", min_value=1, max_value=10000000, value=1000)
+levels_to_add = st.number_input("Levels to Add", min_value=1, max_value=10, value=4)
 
 if st.button('Generate Graph Data'):
     generated_files = expand_graph_csv(existing_nodes, total_new_nodes, levels_to_add)
@@ -259,3 +307,5 @@ if st.button('Generate Graph Data'):
         mime="application/zip"
     )
 
+if st.button('Analyze generation time'):
+    analyze_generation_time(expand_graph_csv, existing_nodes, max_new_nodes=total_new_nodes, step=100, levels_to_add=levels_to_add)

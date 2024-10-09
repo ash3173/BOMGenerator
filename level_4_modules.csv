@@ -1,9 +1,31 @@
 ID,Name,Label,Edge_weight,ParentID
-1,Module_1,Module,86,Versys Metal Product Family - Series c
-2,Module_2,Module,68,Flex Product Family - Series f
-3,Module_3,Module,97,Coronus Product Family - Series d
-4,Module_4,Module,55,Kiyo Product Family - Series d
-5,Module_5,Module,10,Versys Metal Product Family - Series a
-6,Module_6,Module,10,Coronus Product Family - Series a
-7,Module_7,Module,59,Coronus Product Family - Series a
-8,Module_8,Module,92,Coronus Product Family - Series e
+1,Module_1,Module,47,Flex Product Family - Series a
+2,Module_2,Module,33,Kiyo Product Family - Series c
+3,Module_3,Module,87,Flex Product Family - Series f
+4,Module_4,Module,99,Kiyo Product Family - Series d
+5,Module_5,Module,20,Flex Product Family - Series f
+6,Module_6,Module,54,Coronus Product Family - Series a
+7,Module_7,Module,39,Flex Product Family - Series c
+8,Module_8,Module,80,Coronus Product Family - Series c
+9,Module_9,Module,84,Versys Metal Product Family - Series c
+10,Module_10,Module,32,Kiyo Product Family - Series b
+11,Module_11,Module,88,Flex Product Family - Series d
+12,Module_12,Module,57,Coronus Product Family - Series a
+13,Module_13,Module,58,Coronus Product Family - Series a
+14,Module_14,Module,60,Kiyo Product Family - Series d
+15,Module_15,Module,43,Kiyo Product Family - Series f
+16,Module_16,Module,93,Kiyo Product Family - Series a
+17,Module_17,Module,72,Flex Product Family - Series b
+18,Module_18,Module,40,Flex Product Family - Series b
+19,Module_19,Module,14,Versys Metal Product Family - Series e
+20,Module_20,Module,97,Flex Product Family - Series c
+21,Module_21,Module,21,Versys Metal Product Family - Series d
+22,Module_22,Module,25,Flex Product Family - Series c
+23,Module_23,Module,61,Versys Metal Product Family - Series d
+24,Module_24,Module,80,Flex Product Family - Series b
+25,Module_25,Module,86,Kiyo Product Family - Series d
+26,Module_26,Module,52,Flex Product Family - Series d
+27,Module_27,Module,98,Kiyo Product Family - Series f
+28,Module_28,Module,37,Flex Product Family - Series e
+29,Module_29,Module,70,Flex Product Family - Series f
+30,Module_30,Module,32,Coronus Product Family - Series d
