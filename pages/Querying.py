@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import time
 import tracemalloc
 import warnings
+import random
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -58,21 +59,26 @@ def extract_and_visualize_subgraph(_graph, input_node, radius=None):
 
 @time_and_memory
 def subgraph(_graph):
-    
     st.title("Subgraph Extraction and Visualization")
 
-    # Step 1: Input for node ID
-    input_node = st.text_input("Enter Node ID:", value='10')  # Default node ID is '10'
+    # Step 1: Check if sampled nodes are already in session state, if not, sample new nodes
+    if 'sampled_nodes' not in st.session_state:
+        all_nodes = list(_graph.nodes)[:1000]  # Get the first 1000 nodes
+        # Sample 100 nodes, or fewer if there aren't enough nodes
+        st.session_state.sampled_nodes = random.sample(all_nodes, min(100, len(all_nodes)))
 
-    # Step 2: Slider for radius
+    # Step 2: Selectbox for node ID from the sampled nodes
+    input_node = st.selectbox("Select Node ID:", st.session_state.sampled_nodes)
+
+    # Step 3: Slider for radius
     radius = st.slider("Select Radius:", min_value=1, max_value=10, value=2)  # Default radius is 2
 
     if st.button("Visualize Subgraph"):
-        # Step 3: Call the function to extract and visualize the subgraph
+        # Step 4: Call the function to extract and visualize the subgraph
         try:
             subgraph = extract_and_visualize_subgraph(_graph, input_node, radius)
 
-            # Step 4: Display some subgraph info
+            # Step 5: Display some subgraph info
             with st.expander("Show Subgraph Details"):
                 st.write(f"Subgraph Nodes: {list(subgraph.nodes())}")
                 st.write(f"Subgraph Edges: {list(subgraph.edges())}")
@@ -115,13 +121,24 @@ def visualize_shortest_path(graph):
     except nx.NetworkXNoPath:
         st.error(f"No path exists between `{node_1}` and `{node_2}`")
 
+
 @time_and_memory
 def calculate_total_cost_with_weights(graph):
 
     st.title("Total Cost Calculation for Manufacturing or Purchasing Parts")
 
-    # Input for Start Node (final product node)
-    start_node = st.text_input("Enter the Start Node (Product Node):", "2480")
+    # Step 1: Filter nodes with the labels 'make_parts' or 'Purchase_Parts'
+    valid_nodes = [node for node, data in graph.nodes(data=True) if data.get('label') in ['make parts', 'Purchase_Parts']]
+    
+    # Step 2: Randomly sample 100 nodes or less if there aren't enough
+    if 'sampled_valid_nodes' not in st.session_state:
+        st.session_state['sampled_valid_nodes'] = random.sample(valid_nodes, min(100, len(valid_nodes)))
+
+    # Use the stored sampled nodes from session state
+    sampled_valid_nodes = st.session_state['sampled_valid_nodes']
+
+    # Step 3: Selectbox for valid nodes
+    start_node = st.selectbox("Select the Start Node (Product Node):", sampled_valid_nodes)
 
     # Button to calculate the total cost
     if st.button("Calculate Total Cost"):
@@ -143,7 +160,7 @@ def calculate_total_cost_with_weights(graph):
                 label = graph.nodes[node].get('label', '')
 
                 # Add cost based on the node type
-                if label == 'make parts':
+                if label == 'make_parts':
                     manufacturing_cost = graph.nodes[node].get('manufacturing_cost', 0)
                     total_cost += manufacturing_cost
                 elif label == 'Purchase_Parts':
@@ -162,17 +179,27 @@ def calculate_total_cost_with_weights(graph):
                         stack.append(neighbor)
 
             # Display the total cost
-            st.write(f"Total cost to manufacture or purchase parts for {start_node}: {total_cost}")
+            st.success(f"Total cost to manufacture or purchase parts for {start_node}: {total_cost}")
         else:
-            st.write("Please enter a valid start node.")
+            st.warning("Please enter a valid start node.")
+
 
 @time_and_memory
 def count_parts_needed(graph):
     st.title("Parts Counter for Product Node")
 
-    # Input for Product Node (assuming the nodes are string type)
-    product_node = st.text_input("Enter the Product Node:", "2480")
+    # Step 1: Filter nodes with labels 'make_parts' or 'Purchase_Parts'
+    valid_nodes = [node for node, data in graph.nodes(data=True) if data.get('label') in ['make parts', 'Purchase_Parts', 'Module']]
+    
+    # Step 2: Randomly sample 100 nodes or less if there aren't enough
+    if 'sampled_valid_nodes' not in st.session_state:
+        st.session_state['sampled_valid_nodes'] = random.sample(valid_nodes, min(100, len(valid_nodes)))
 
+    # Use the stored sampled nodes from session state
+    sampled_valid_nodes = st.session_state['sampled_valid_nodes']
+
+    # Step 3: Selectbox for valid nodes
+    product_node = st.selectbox("Select the Product Node:", sampled_valid_nodes)
 
     # Button to calculate
     if st.button("Count Parts"):
@@ -180,9 +207,7 @@ def count_parts_needed(graph):
             # Labels of nodes
             labels = nx.get_node_attributes(graph, 'label')
 
-            # Traverse the graph within the given radius (if radius is provided)
-            
-            
+            # Get the subgraph of connected nodes
             subgraph = nx.ego_graph(graph, product_node)  # Get all connected nodes
 
             # Initialize counters
@@ -191,7 +216,7 @@ def count_parts_needed(graph):
 
             # Traverse the nodes in the subgraph
             for node in subgraph.nodes:
-                if labels.get(node) == 'make parts':
+                if labels.get(node) == 'make_parts':
                     make_parts_count += 1
                 elif labels.get(node) == 'Purchase_Parts':
                     purchase_parts_count += 1
@@ -200,16 +225,33 @@ def count_parts_needed(graph):
             st.write(f"Make parts needed: {make_parts_count}")
             st.write(f"Purchase parts needed: {purchase_parts_count}")
         else:
-            st.write("Please enter a valid product node.")
+            st.write("Please select a valid product node.")
+
 
 @time_and_memory
 def check_part_expiration(graph):
     st.title("Part Expiration Checker")
 
-    # Input for Part Node (part ID)
-    part_node = st.text_input("Enter the Part Node ID:", "2480")
+    # Step 1: Filter nodes with the label 'make parts'
+    make_parts_nodes = [node for node, data in graph.nodes(data=True) if data.get('label') == 'make parts']
+    
+    # Check if there are any 'make parts' nodes
+    if not make_parts_nodes:
+        st.warning("No nodes found with the label 'make parts'.")
+        return  # Exit the function if there are no nodes
 
-    # Button to check if the part has expired
+    # Check if 'sampled_expiry' exists in session state to avoid refreshing
+    if 'sampled_expiry' not in st.session_state:
+        # Randomly sample 100 nodes or fewer if there aren't enough
+        st.session_state['sampled_expiry'] = random.sample(make_parts_nodes, min(100, len(make_parts_nodes)))
+
+    # Use the stored sampled nodes from session state
+    sampled_expiry = st.session_state['sampled_expiry']
+
+    # Step 2: Selectbox for random sample of make_parts nodes
+    part_node = st.selectbox("Select the Part Node ID:", sampled_expiry)
+
+    # Step 3: Button to check if the part has expired
     if st.button("Check Expiration Status"):
         if part_node:
             if part_node in graph.nodes:
@@ -223,31 +265,43 @@ def check_part_expiration(graph):
                     # Get the current date
                     current_date = datetime.now()
 
-                    # Calculate the difference in years
+                    # Calculate the difference in days
                     time_difference = current_date - manufacturing_date
 
                     # Expiry check (if more than 1000 days have passed)
                     if time_difference.days > 1000:
-                        st.write(f"The part {part_node} has expired.")
+                        st.success(f"The part {part_node} has expired.")
                     else:
-                        st.write(f"The part {part_node} has not expired.")
+                        st.success(f"The part {part_node} has not expired.")
                 else:
-                    st.write(f"No manufacturing date available for part {part_node}.")
+                    st.warning(f"No manufacturing date available for part {part_node}.")
             else:
-                st.write(f"Part {part_node} does not exist in the graph.")
+                st.error(f"Part {part_node} does not exist in the graph.")
         else:
-            st.write("Please enter a valid part node.")
+            st.warning("Please select a valid part node.")
+
 
 @time_and_memory
 def find_suppliers_for_purchase_part(graph):
-    # Step 1: Input for Purchase Part Node
-    purchase_part_node = st.text_input("Enter Purchase Part Node ID:")
+    # Step 1: Filter nodes with the label 'Purchase_Parts'
+    purchase_parts_nodes = [node for node, data in graph.nodes(data=True) if data.get('label') == 'Purchase_Parts']
     
+    # Check if 'sampled_purchase_parts' exists in session state to avoid refreshing
+    if 'sampled_purchase_parts' not in st.session_state:
+        st.session_state['sampled_purchase_parts'] = random.sample(purchase_parts_nodes, min(100, len(purchase_parts_nodes)))
+
+    # Use the stored sampled nodes from session state
+    sampled_purchase_parts = st.session_state['sampled_purchase_parts']
+
+    # Step 2: Selectbox for random sample of Purchase_Parts nodes
+    purchase_part_node = st.selectbox("Select Purchase Part Node ID:", sampled_purchase_parts)
+
+    # Step 3: Button to find suppliers
     if st.button("Find Suppliers"):
         if not purchase_part_node:
-            st.warning("Please enter a valid Purchase Part Node ID.")
+            st.warning("Please select a valid Purchase Part Node ID.")
             return
-        
+
         # Check if the purchase part node exists in the graph
         if purchase_part_node not in graph:
             st.warning(f"Node {purchase_part_node} not found in the graph.")
@@ -261,19 +315,31 @@ def find_suppliers_for_purchase_part(graph):
             if graph.nodes[neighbor].get('label') == 'Suppliers':
                 suppliers.append(neighbor)
 
-        # Display results
+        # Step 4: Display results
         if suppliers:
             st.success(f"Suppliers for {purchase_part_node}: {', '.join(suppliers)}")
         else:
             st.warning(f"No suppliers found for {purchase_part_node}.")
 
+
 @time_and_memory
 def get_quality_control_status_streamlit(graph):
     st.title("Check Quality Control Status")
+
+    # Get all nodes with the label 'make parts'
+    make_parts_nodes = [node for node, data in graph.nodes(data=True) if data.get('label') == 'make parts']
     
-    # Input field for part ID
-    part_id = st.text_input("Enter the Part ID:", value="2480")
-    
+    # Check if 'sampled_quality' exists in session state to avoid refreshing
+    if 'sampled_quality' not in st.session_state:
+        st.session_state['sampled_quality'] = random.sample(make_parts_nodes, min(100, len(make_parts_nodes)))
+
+    # Use the stored sampled nodes from session state
+    sampled_nodes = st.session_state['sampled_quality']
+
+    # Dropdown to select from sampled 'make parts' nodes
+    part_id = st.selectbox("Select the Part ID:", sampled_nodes)
+
+    # Button to check quality control status
     if st.button("Check Quality Control") and part_id:
         # Check if the node exists in the graph
         if part_id in graph.nodes:
@@ -290,9 +356,23 @@ def get_quality_control_status_streamlit(graph):
 def display_node_features(graph):
     st.title("Node Features Viewer")
     
-    # Input field for the node ID
-    node_id = st.text_input("Enter the Node ID:", value="2480")
-    if st.button("Check Node Features") and node_id:
+    # Check if 'sampled_nodes' exists in session state
+    if 'sampled_nodes' not in st.session_state:
+        all_nodes = list(graph.nodes)
+        # Sample only once and store in session state
+        if len(all_nodes) >100:
+            st.session_state['sampled_nodes'] = random.sample(all_nodes, 100)
+        else:
+            st.session_state['sampled_nodes']=all_nodes
+
+    # Use the stored sampled nodes from session state
+    sampled_nodes = st.session_state['sampled_nodes']
+    
+    # Use selectbox for displaying sampled node options
+    node_id = st.selectbox("Select the Node ID:", sampled_nodes)
+
+    # If a node is selected
+    if st.button("Check Node Attributes") and node_id:
         # Check if the node exists in the graph
         if node_id in graph.nodes:
             # Fetch all node attributes
@@ -307,8 +387,7 @@ def display_node_features(graph):
                 st.warning(f"Node {node_id} has no attributes.")
         else:
             st.error(f"Node ID {node_id} not found in the graph.")
-
-@time_and_memory
+# @time_and_memory
 @st.cache_resource
 def add_nodes_from_csv(_graph, all_csv):
     module = True
@@ -413,7 +492,7 @@ def app():
 
         
 
-        options = ["Select an option","Statistics", "Subgraph", "Visualize Shortest Path", "Count Parts", "Total Cost", "Expiry Date", "Find Supplier", "Quality Control Status", "Node Features"]
+        options = ["Select an option","Statistics", "Subgraph", "Visualize Shortest Path", "Total Cost", "Expiry Date", "Find Supplier", "Quality Control Status", "Node Features"]
         selected_option = st.selectbox("Choose a query:", options)
         if selected_option == "Statistics":
             statistics(graph)
@@ -421,8 +500,8 @@ def app():
             subgraph(graph)
         elif selected_option == "Visualize Shortest Path":
             visualize_shortest_path(graph)
-        elif selected_option == "Count Parts":
-            count_parts_needed(graph)
+        # elif selected_option == "Count Parts":
+        #     count_parts_needed(graph)
         elif selected_option=="Total Cost":
             calculate_total_cost_with_weights(graph)
         elif selected_option=="Expiry Date":
