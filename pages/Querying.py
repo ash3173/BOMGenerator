@@ -6,6 +6,9 @@ import io
 import matplotlib.pyplot as plt
 import time
 import tracemalloc
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def time_and_memory(func):
     def wrapper(*args, **kwargs):
@@ -23,17 +26,17 @@ def time_and_memory(func):
         
         return result  # Return the result of the wrapped function
     return wrapper
-
-
 @time_and_memory
-def statistics(graph):
+@st.cache_resource
+def statistics(_graph):
     # Display graph statistics
-    st.write(f"Number of nodes: {graph.number_of_nodes()}")
-    st.write(f"Number of edges: {graph.number_of_edges()}")
+    st.write(f"Number of nodes: {_graph.number_of_nodes()}")
+    st.write(f"Number of edges: {_graph.number_of_edges()}")
 
-def extract_and_visualize_subgraph(graph, input_node, radius=None):
+@st.cache_resource
+def extract_and_visualize_subgraph(_graph, input_node, radius=None):
     # Step 1: Extract the subgraph with ego_graph function (nodes within the radius from the input node)
-    subgraph = nx.ego_graph(graph, input_node, radius=radius)
+    subgraph = nx.ego_graph(_graph, input_node, radius=radius)
 
     # Step 2: Position nodes for better visualization
     pos = nx.spring_layout(subgraph)
@@ -54,7 +57,7 @@ def extract_and_visualize_subgraph(graph, input_node, radius=None):
     return subgraph
 
 @time_and_memory
-def subgraph(graph):
+def subgraph(_graph):
     
     st.title("Subgraph Extraction and Visualization")
 
@@ -67,7 +70,7 @@ def subgraph(graph):
     if st.button("Visualize Subgraph"):
         # Step 3: Call the function to extract and visualize the subgraph
         try:
-            subgraph = extract_and_visualize_subgraph(graph, input_node, radius)
+            subgraph = extract_and_visualize_subgraph(_graph, input_node, radius)
 
             # Step 4: Display some subgraph info
             with st.expander("Show Subgraph Details"):
@@ -269,9 +272,9 @@ def get_quality_control_status_streamlit(graph):
     st.title("Check Quality Control Status")
     
     # Input field for part ID
-    part_id = st.text_input("Enter the Part ID:", value="")
+    part_id = st.text_input("Enter the Part ID:", value="2480")
     
-    if part_id:
+    if st.button("Check Quality Control") and part_id:
         # Check if the node exists in the graph
         if part_id in graph.nodes:
             # Check if the node has a quality control status
@@ -288,9 +291,8 @@ def display_node_features(graph):
     st.title("Node Features Viewer")
     
     # Input field for the node ID
-    node_id = st.text_input("Enter the Node ID:", value="")
-    
-    if node_id:
+    node_id = st.text_input("Enter the Node ID:", value="2480")
+    if st.button("Check Node Features") and node_id:
         # Check if the node exists in the graph
         if node_id in graph.nodes:
             # Fetch all node attributes
@@ -307,7 +309,8 @@ def display_node_features(graph):
             st.error(f"Node ID {node_id} not found in the graph.")
 
 @time_and_memory
-def add_nodes_from_csv(graph, all_csv):
+@st.cache_resource
+def add_nodes_from_csv(_graph, all_csv):
     module = True
     
     for csv_filename in all_csv:
@@ -324,9 +327,9 @@ def add_nodes_from_csv(graph, all_csv):
                 name = row['Name']
 
                 # Add node with attributes
-                graph.add_node(node_id, name=name, label=node_type, edge_weight=edge_weight)
+                _graph.add_node(node_id, name=name, label=node_type, edge_weight=edge_weight)
                 if parent_id:
-                    graph.add_edge(parent_id, node_id, weight=edge_weight)
+                    _graph.add_edge(parent_id, node_id, weight=edge_weight)
                 continue
 
             node_id = row['ID']
@@ -366,15 +369,15 @@ def add_nodes_from_csv(graph, all_csv):
                 })
 
             # Add node with attributes
-            graph.add_node(node_id, **attributes)
+            _graph.add_node(node_id, **attributes)
             
             # If the node has a parent, create an edge between the parent and the node
             if parent_id:
-                graph.add_edge(parent_id, node_id, weight=attributes['edge_weight'])
+                _graph.add_edge(parent_id, node_id, weight=attributes['edge_weight'])
 
         module = False
 
-    return graph
+    return _graph
 
 # Streamlit app for querying
 def app():
